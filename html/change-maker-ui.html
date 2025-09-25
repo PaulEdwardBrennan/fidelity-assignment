@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Currency Converter</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+            font-weight: 300;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .input-section {
+            margin-bottom: 30px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #555;
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
+
+        input[type="number"], input[type="text"], select {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        input[type="number"]:focus, input[type="text"]:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            background: white;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .result-section {
+            margin-top: 30px;
+            padding: 25px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .result-content {
+            width: 100%;
+        }
+
+        .result-title {
+            color: #495057;
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .formatted-output {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            font-size: 1.4rem;
+            color: #333;
+            text-align: center;
+            font-weight: 500;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            margin-bottom: 20px;
+            border-left: 4px solid #667eea;
+        }
+
+        .breakdown {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .breakdown-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+
+        .breakdown-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .breakdown-count {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #667eea;
+            display: block;
+        }
+
+        .breakdown-denomination {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 5px;
+            text-transform: capitalize;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #dc3545;
+            margin-top: 15px;
+        }
+
+        .placeholder-text {
+            color: #6c757d;
+            font-style: italic;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .api-status {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        .api-status.connected {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .api-status.disconnected {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>💰 Currency Converter</h1>
+        
+        <div id="apiStatus" class="api-status disconnected">
+            🔍 Checking API connection...
+        </div>
+        
+        <div class="input-section">
+            <label for="amountInput">Enter amount in cents:</label>
+            <input type="number" id="amountInput" placeholder="Enter a number (e.g., 287)" min="0" step="1">
+        </div>
+
+        <div class="input-section">
+            <label for="currencyInput">Enter currency:</label>
+            <input type="text" id="currencyInput" placeholder="Enter a currency (e.g., USD)" value="USD">
+        </div>
+        
+        <button onclick="convertCurrency()" id="convertBtn">
+            Convert to Change
+        </button>
+        
+        <div class="result-section" id="resultSection">
+            <div class="placeholder-text">
+                Enter an amount and click "Convert to Change" to see the breakdown
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:8080/api/changemaker/change';
+        let apiConnected = false;
+
+        // Check API connection on page load
+        async function checkApiConnection() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/1?currency=USD`, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'text/plain'
+                    },
+                    timeout: 5000
+                });
+                
+                if (response.ok) {
+                    apiConnected = true;
+                    updateApiStatus(true);
+                }
+                else {
+                    throw new Error('API responded with error');
+                }
+            }
+            catch (error) {
+                apiConnected = false;
+                updateApiStatus(false);
+                console.error('API connection check failed:', error);
+            }
+        }
+
+        function updateApiStatus(connected) {
+            const statusElement = document.getElementById('apiStatus');
+            if (connected) {
+                statusElement.className = 'api-status connected';
+                statusElement.innerHTML = '✅ Connected to API at ' + API_BASE_URL;
+            }
+            else {
+                statusElement.className = 'api-status disconnected';
+                statusElement.innerHTML = '❌ Cannot connect to API at ' + API_BASE_URL + '<br>Make sure your Spring Boot service is running';
+            }
+        }
+
+        async function convertCurrency() {
+            const amountInput = document.getElementById('amountInput');
+            const currencySelect = document.getElementById('currencyInput');
+            const amount = parseInt(amountInput.value);
+            const currency = currencySelect.value;
+            const convertBtn = document.getElementById('convertBtn');
+            const resultSection = document.getElementById('resultSection');
+
+            // Validation
+            if (!amount || amount < 0) {
+                showError('Please enter a valid positive number');
+                return;
+            }
+
+            // Show loading state
+            convertBtn.disabled = true;
+            convertBtn.innerHTML = '<span class="loading"></span>Converting...';
+            
+            try {
+                const url = `${API_BASE_URL}/${amount}?currency=${encodeURIComponent(currency)}`;
+                //const response = await fetch(`${API_BASE_URL}/${amount}`, {
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'text/plain',
+                        'Content-Type': 'text/plain'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const textResult = await response.text();
+                displayTextResult(textResult);
+                
+            } catch (error) {
+                console.error('Error calling API:', error);
+                showError(`Failed to convert currency: ${error.message}`);
+            } finally {
+                // Reset button state
+                convertBtn.disabled = false;
+                convertBtn.innerHTML = 'Convert to Change';
+            }
+        }
+
+        function displayTextResult(textResult) {
+            const resultSection = document.getElementById('resultSection');
+            
+            const html = `
+                <div class="result-content">
+                    <div class="result-title">Change Breakdown</div>
+                    <div class="formatted-output">${textResult}</div>
+                </div>
+            `;
+            
+            resultSection.innerHTML = html;
+        }
+
+        function showError(message) {
+            const resultSection = document.getElementById('resultSection');
+            resultSection.innerHTML = `
+                <div class="result-content">
+                    <div class="error-message">
+                        <strong>Error:</strong> ${message}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Allow Enter key to trigger conversion
+        document.getElementById('amountInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                convertCurrency();
+            }
+        });
+
+        // Auto-focus input field
+        document.getElementById('amountInput').focus();
+
+        // Check API connection when page loads
+        window.addEventListener('load', checkApiConnection);
+    </script>
+</body>
+</html>
