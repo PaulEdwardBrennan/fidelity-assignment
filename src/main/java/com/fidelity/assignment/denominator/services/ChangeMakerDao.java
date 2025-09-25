@@ -20,17 +20,4 @@ public class ChangeMakerDao {
 
     /* String representing the currency change amounts. */
     private String changeAmounts;
-
-    //public ChangeMakerDao() {}
-
-    /**
-     *
-     * @param success Indicates if the cents amount was successfully validated.
-     * @param changeAmounts Contains the currency breakdown or an error message from the validator.
-     */
-//    public ChangeMakerDao(boolean success, String changeAmounts) {
-//
-//        this.isSuccess = success;
-//        this.changeAmounts = changeAmounts;
-//    }
 }
