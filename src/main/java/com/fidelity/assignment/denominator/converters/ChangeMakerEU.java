@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import java.util.Scanner;
 
 /**
- * This class changes an amount of cents into the appropriate denominates of Euro notes and coins.
+ * This class changes an amount of cents into the appropriate denomination of Euro notes and coins.
  *
  */
 @Component

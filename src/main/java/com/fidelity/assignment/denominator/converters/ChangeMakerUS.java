@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import java.util.Scanner;
 
 /**
- * This class changes an amount of cents into the appropriate denominates of US dollar notes and coins.
+ * This class changes an amount of cents into the appropriate denomination of US dollar notes and coins.
  *
  */
 @Component

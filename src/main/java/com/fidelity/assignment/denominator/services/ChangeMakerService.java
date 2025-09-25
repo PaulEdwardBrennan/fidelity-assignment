@@ -6,17 +6,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+/**
+ * This class acts as the service provider for breaking an amount in cents to the various denominations of
+ * a currency.
+ */
 @Service
 public class ChangeMakerService {
 
+    /* This will do the work of denominating the cents. */
     private IChangeMaker changeMaker;
+
+    /* This will validate the cents value input by the user. */
     private CentsValidator validator;
 
     @Autowired
     public ChangeMakerService(@Qualifier("USD") IChangeMaker changeMaker, CentsValidator validator) {
 
+        /* Constructor injection of the change maker and validator beans. */
         this.validator = validator;
-        //this.changeMaker = new ChangeMakerUS();
         this.changeMaker = changeMaker;
     }
 
