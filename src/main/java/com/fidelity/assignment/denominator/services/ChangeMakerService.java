@@ -22,6 +22,11 @@ public class ChangeMakerService {
     @Autowired
     public ChangeMakerService(@Qualifier("USD") IChangeMaker changeMaker, CentsValidator validator) {
 
+        // TODO Extend for other currencies
+        // ChangeMakerService(List<IChangeMaker> changeMakers, CentsValidator validator)
+        // this.changeMakers = changeMakers;
+        // etc, etc....
+
         /* Constructor injection of the change maker and validator beans. */
         this.validator = validator;
         this.changeMaker = changeMaker;
