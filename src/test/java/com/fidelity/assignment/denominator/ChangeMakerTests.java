@@ -29,6 +29,7 @@ class ChangeMakerServiceTest {
 
     @BeforeEach
     void setUp() {
+
         changeMakerService = new ChangeMakerService(mockChangeMaker, mockValidator);
     }
 
@@ -50,7 +51,7 @@ class ChangeMakerServiceTest {
     void testDenominate_WhenValidInput_ShouldReturnSuccessfulDao() {
         // Given
         int cents = 287;
-        String expectedChangeAmounts = "2 dollar bills, 3 quarters, 1 dime, 2 pennies";
+        String expectedChangeAmounts = "2 dollar bills, 3 quarters, 1 dime, 2 cents";
 
         when(mockValidator.validate(cents)).thenReturn(true);
 
